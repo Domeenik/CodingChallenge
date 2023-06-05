@@ -1,0 +1,6 @@
+{
+    "zmq": {
+        "address": "localhost",
+        "port": 5555
+    }
+}
