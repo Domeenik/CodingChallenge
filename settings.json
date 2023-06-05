@@ -1,6 +1,7 @@
 {
     "zmq": {
         "address": "localhost",
-        "port": 5555
+        "port": 5555,
+        "epoch_time": false
     }
 }
