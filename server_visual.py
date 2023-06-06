@@ -23,9 +23,7 @@ context = zmq.Context()
 socket = context.socket(zmq.PAIR)
 socket.bind(f"tcp://*:{c_zmq_port}")
 
-recv_pos = msg.Position()
-
-# create opencv environment
+# create opencv image and get scale factors
 img = np.zeros((c_height, c_width, 3), dtype = np.uint8)
 scale_x = c_width / c_field_width
 scale_y = c_height / c_field_height
@@ -33,9 +31,9 @@ scale_y = c_height / c_field_height
 # dict for storing the player positions
 player_pos = {}
 
-counter = 0
+# main loop
+recv_pos = msg.Position()
 while True:
-    counter += 1
     # get messages and store the player positions in the dict
     message = socket.recv()
     recv_pos.ParseFromString(message)
@@ -47,12 +45,8 @@ while True:
         x = player_pos[id][0] * scale_x
         y = player_pos[id][1] * scale_y
         img = cv2.circle(img, (int(x), int(y)), 1, c_visual_color, c_visual_point_size)
-    # show the created image
-    if counter%10 == 0:
-        cv2.imshow('Game visualization', img)
+        
+    # show image and check for exit via the key 'q'
+    cv2.imshow('Game visualization', img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        # socket.send(b"stop")
         break
-    # else:
-        #  Send reply back to client
-        # socket.send(b"success")
