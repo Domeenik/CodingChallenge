@@ -14,16 +14,16 @@ class Player():
         self.f_max_width = field.size_x
         self.f_max_height = field.size_y
         self.max_vel = max_vel
-        self.pos = Vector2(0.,0.)
-        self.vel = Vector2(random.random(),random.random())
+        self.pos = Vector2(random.randint(0, self.f_max_width)*1.0, random.randint(0, self.f_max_height)*1.0)
+        self.vel = Vector2((random.random()-0.5)*max_vel, (random.random()-0.5)*max_vel)
         self.time_start = time.time()
         self.time_a = time.time()
-    
+        
     def update(self, players:list):
         time_b = time.time()
         time_delta = time_b - self.time_a
         self.time_a = time_b
-        self.pos += self.vel * time_delta
+        self.pos += (self.vel * time_delta)
         
         # check boundaries
         if self.pos.x() <= 0:
@@ -45,12 +45,56 @@ class Player():
         return self.msg_pos
         
         
+class PlayerBoid(Player):
+    def __init__(self, id:int, field:Field, max_vel:float, sight:float):
+        Player.__init__(self, id, field, max_vel)
+        self.sight = sight
+        
+    def update(self, players:list):
+        time_b = time.time()
+        time_delta = time_b - self.time_a
+        self.time_a = time_b
+        
+        relevant_players = []
+        for p in players:
+            distance = self.pos.distance_to(p.pos)
+            if distance < self.sight:
+                relevant_players.append(p)
+        
+        # boid behavior
+        for p in relevant_players:
+            # alignment
+            self.vel += p.vel * 0.01
+            # coherence
+            self.vel += (p.pos - self.pos) * 0.1
+            # seperation
+            distance = self.pos.distance_to(p.pos)
+            if distance > 0:
+                self.vel -= (p.pos - self.pos) * (1 / distance) * 0.3
+        
+        # avoid the outer walls
+        if self.pos.x() - self.sight < 0:
+            self.vel += Vector2((1 / (0 - self.pos.x())) * 0.1, 0)
+        if self.pos.x() + self.sight < self.f_max_width:
+            self.vel -= Vector2((1 / (self.f_max_width - self.pos.x())) * 0.1, 0)
+            
+        if self.pos.y() - self.sight < 0:
+            self.vel += Vector2(0, (1 / (0 - self.pos.y())) * 0.1)
+        if self.pos.y() + self.sight < self.f_max_height:
+            self.vel -= Vector2(0, (1 / (self.f_max_height - self.pos.y())) * 0.1)
+            
+            
+        self.vel = self.vel.norm() * self.max_vel
+        
+        self.pos += (self.vel * time_delta)
+        
+        
 class Game():
     def __init__(self, player_count:int, field:Field):
         self.players = []
         self.field = field
         for i in range(player_count):
-            p = Player(id=i, field=self.field, max_vel=5)
+            p = PlayerBoid(id=i, field=self.field, max_vel=2., sight=5.0)
             self.players.append(p)
             
     def update(self):

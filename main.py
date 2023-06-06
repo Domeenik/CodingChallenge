@@ -40,14 +40,18 @@ print("[INFO] Start with the main loop")
 time_a = time.time()
 while True:
     game.update()
+    print("update")
     
     time_b = time.time()
-    if time_b > time_a + (1./c_freq):
+    if time_b >= time_a + (1./c_freq):
         time_a = time_b
         msg_list = game.get_protobuf()
+        print("send")
 
         for msg in msg_list:
             socket.send(msg.SerializeToString())
+            
+            # wait for answer and check if data was successfully received
             message = socket.recv()
             message = message.decode('utf-8')
             if not message == "success":

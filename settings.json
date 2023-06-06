@@ -6,7 +6,7 @@
     },
     "game": {
         "player_count": 10,
-        "updates_per_second": 100
+        "updates_per_second": 10
     },
     "field": {
         "width": 28,
