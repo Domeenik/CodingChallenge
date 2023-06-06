@@ -5,7 +5,7 @@
         "epoch_time": false
     },
     "game": {
-        "amount_of_players": 10,
+        "player_count": 10,
         "updates_per_second": 1
     },
     "field": {

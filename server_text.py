@@ -1,5 +1,4 @@
 import src.msg_pb2 as msg
-import time
 import zmq
 
 context = zmq.Context()
