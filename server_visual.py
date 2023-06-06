@@ -20,7 +20,7 @@ c_field_height = config.get("field", "height")
 # create zmq server
 print(f"[INFO] Start server on '*:{c_zmq_port}")
 context = zmq.Context()
-socket = context.socket(zmq.REP)
+socket = context.socket(zmq.PAIR)
 socket.bind(f"tcp://*:{c_zmq_port}")
 
 recv_pos = msg.Position()
@@ -51,8 +51,8 @@ while True:
     if counter%10 == 0:
         cv2.imshow('Game visualization', img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        socket.send(b"stop")
+        # socket.send(b"stop")
         break
-    else:
+    # else:
         #  Send reply back to client
-        socket.send(b"success")
+        # socket.send(b"success")

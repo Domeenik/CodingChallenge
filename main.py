@@ -25,9 +25,11 @@ print(f"[CONF] Field dimensions are {c_field_width} m x {c_field_height} m")
 # setup ZeroMQ-connection
 print(f"[INFO] Connect to server 'tcp://{c_zmq_addr}:{c_zmq_port}'")
 context = zmq.Context()
-socket = context.socket(zmq.REQ)
+socket = context.socket(zmq.PAIR)
 #ToDo: add timeout
 socket.connect(f"tcp://{c_zmq_addr}:{c_zmq_port}")
+
+#ToDo: add handshake
 
 # setup game
 print("[INFO] Create game instance")
@@ -39,24 +41,24 @@ game = Game(player_count=c_player_count, field=field)
 print("[INFO] Start with the main loop")
 time_a = time.time()
 while True:
+    # time_update = time.time()
     game.update()
-    print("update")
+    # print(f"game update: {time.time()- time_update}")
     
     time_b = time.time()
     if time_b >= time_a + (1./c_freq):
         time_a = time_b
         msg_list = game.get_protobuf()
-        print("send")
 
         for msg in msg_list:
             socket.send(msg.SerializeToString())
-            
             # wait for answer and check if data was successfully received
-            message = socket.recv()
-            message = message.decode('utf-8')
-            if not message == "success":
-                if message == "stop":
-                    print("[INFO] The server send the command to stop sending")
-                    quit()
-                else:
-                    print(f"[WARN] Unexpected answer: '{message}'")
+            # message = socket.recv()
+            # message = message.decode('utf-8')
+            # if not message == "success":
+            #     if message == "stop":
+            #         print("[INFO] The server send the command to stop sending")
+            #         quit()
+            #     else:
+            #         print(f"[WARN] Unexpected answer: '{message}'")
+        print(f"time send: {time.time()- time_b}")
