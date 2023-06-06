@@ -13,4 +13,4 @@ while True:
     print("[INFO] received: {}".format(recv_pos))
     
     #  Send reply back to client
-    socket.send(b"World")
+    socket.send(b"success")

@@ -14,23 +14,24 @@ c_zmq_port = config.get("zmq", "port")
 c_zmq_epoc_time = config.get("zmq", "epoch_time")
 c_freq = config.get("game", "updates_per_second")
 c_player_count = config.get("game", "player_count")
-c_field_x = config.get("field", "width")
-c_field_y = config.get("field", "height")
+c_field_width = config.get("field", "width")
+c_field_height = config.get("field", "height")
 
 # some info about the config
 print(f"[CONF] Sending frequency is {(1./c_freq)} Hz")
 print(f"[CONF] There are {c_player_count} players")
-print(f"[CONF] Field dimensions are {c_field_x} m x {c_field_y} m")
+print(f"[CONF] Field dimensions are {c_field_width} m x {c_field_height} m")
 
 # setup ZeroMQ-connection
 print(f"[INFO] Connect to server 'tcp://{c_zmq_addr}:{c_zmq_port}'")
 context = zmq.Context()
 socket = context.socket(zmq.REQ)
+#ToDo: add timeout
 socket.connect(f"tcp://{c_zmq_addr}:{c_zmq_port}")
 
 # setup game
 print("[INFO] Create game instance")
-field = Field(size_x=c_field_x, size_y=c_field_y)
+field = Field(size_x=c_field_width, size_y=c_field_height)
 game = Game(player_count=c_player_count, field=field)
 
 
@@ -48,3 +49,10 @@ while True:
         for msg in msg_list:
             socket.send(msg.SerializeToString())
             message = socket.recv()
+            message = message.decode('utf-8')
+            if not message == "success":
+                if message == "stop":
+                    print("[INFO] The server send the command to stop sending")
+                    quit()
+                else:
+                    print(f"[WARN] Unexpected answer: '{message}'")

@@ -1,6 +1,7 @@
 from src.vectors import Vector2
 import src.msg_pb2 as msg
 import time
+import random
 
 class Field():
     def __init__(self, size_x:float, size_y:float):
@@ -10,11 +11,11 @@ class Field():
 class Player():
     def __init__(self, id:int, field:Field, max_vel:float):
         self.id = id
-        self.f_max_x = field.size_x
-        self.f_max_y = field.size_y
+        self.f_max_width = field.size_x
+        self.f_max_height = field.size_y
         self.max_vel = max_vel
         self.pos = Vector2(0.,0.)
-        self.vel = Vector2(0.,0.)
+        self.vel = Vector2(random.random(),random.random())
         self.time_start = time.time()
         self.time_a = time.time()
     
@@ -26,12 +27,12 @@ class Player():
         
         # check boundaries
         if self.pos.x() <= 0:
-            self.pos.set_x(self.f_max_x)
+            self.pos.set_x(self.f_max_width)
         if self.pos.y() <= 0:
-            self.pos.set_y(self.f_max_y)
-        if self.pos.x() >= self.f_max_x:
+            self.pos.set_y(self.f_max_height)
+        if self.pos.x() >= self.f_max_width:
             self.pos.set_x(0)
-        if self.pos.y() >= self.f_max_y:
+        if self.pos.y() >= self.f_max_height:
             self.pos.set_y(0)
             
     def get_protobuf(self):
