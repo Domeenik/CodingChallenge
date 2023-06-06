@@ -11,7 +11,6 @@ print(f"[INFO] Load settings from config file '{CONFIG_FILE}'")
 config = ConfigHandler(CONFIG_FILE)
 c_zmq_addr = config.get("zmq", "address")
 c_zmq_port = config.get("zmq", "port")
-c_zmq_epoc_time = config.get("zmq", "epoch_time")
 c_freq = config.get("game", "updates_per_second")
 c_player_count = config.get("game", "player_count")
 c_field_width = config.get("field", "width")
@@ -51,9 +50,10 @@ while True:
         excessive_time = ((time_b - time_a) - (1./c_freq))
         if (excessive_time / (1./c_freq)) > c_max_exc_time:
             print(f"[WARN] The overrun time above the set point is too long by {round((excessive_time / (1./c_freq)), 5)}%")
-            print("[WARN] The simulation will not run in real time")
+            print("[WARN] The simulation will NOT run in real time")
+        time_a = time_b
+            
         # send player data to the server
         msg_list = game.get_protobuf()
         for msg in msg_list:
             socket.send(msg.SerializeToString())
-        time_a = time_b

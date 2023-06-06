@@ -18,7 +18,8 @@
         "width": 600,
         "height": 400,
         "point_size": 6,
-        "color": [255, 255, 255]
+        "player_color": [150, 135, 105],
+        "background_color": [242, 234, 218]
     },
     "quality_control": {
         "max_excessive_time_percent": 0.01
