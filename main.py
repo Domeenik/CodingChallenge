@@ -35,7 +35,6 @@ print(f"[CONF] Runtime testing is {'enabled' if c_runtime_testing else 'disabled
 print(f"[INFO] Connect to server 'tcp://{c_zmq_addr}:{c_zmq_port}'")
 context = zmq.Context()
 socket = context.socket(zmq.PAIR)
-# ToDo: add timeout
 socket.connect(f"tcp://{c_zmq_addr}:{c_zmq_port}")
 
 # setup game instance
