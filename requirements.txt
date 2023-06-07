@@ -1,0 +1,5 @@
+numpy==1.22.3
+opencv-python==4.7.0.72
+protobuf==4.23.2
+pyzmq==25.1.0
+zmq==0.0.0
