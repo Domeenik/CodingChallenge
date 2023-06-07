@@ -11,6 +11,11 @@ To enable the user to change the values of the simulation without programming kn
 `field:width` - width of the field in meters  
 `field:height` - height of the field in meters  
 `player:max_speed` - maximum speed of players in meters/second  
+`player:boid_behavior` - enables a bit more complex movement pattern  
+`player:sight` - vision range for player (boid behavior only)  
+`player:alignment` - factor for the alignment to the neighbors (boid behavior only)  
+`player:coherence` - factor how much the position of other players is targeted (boid behavior only)  
+`player:separation` - factor how much is repelled by the other players (boid behavior only)  
 `visualisation:width` - amount of pixels in x direction  
 `visualisation:height` - amount of pixels in y direction  
 `visualisation:point_size` - size of the shown players on screen in pixels  

@@ -12,7 +12,12 @@
         "height": 15
     },
     "player": {
-        "max_speed": 3
+        "max_speed": 6.0,
+        "boid_behavior": true,
+        "sight": 3.0,
+        "alignment": 0.002,
+        "coherence": 0.1,
+        "separation": 0.1
     },
     "visualization": {
         "width": 600,
