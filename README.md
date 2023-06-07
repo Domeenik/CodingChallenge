@@ -1,6 +1,6 @@
 # CodingChallengeKIN
-
-## Explanation of the settings.json
+This project contains my solution to the Coding Challenge. I have chosen an object-oriented approach.
+The simulation can be started by `python3 ./main.py`. The server side is in the scripts `./server_text.py` and `./server_visual.py`. The script `./server_visual.py` gives the player a graphical overview of the player positions. This was realized with OpenCV. In the `./requirements.txt` are the necessary modules for the execution. The test environment can be started with `python3 -m unittest discover tests`.
 To enable the user to change the values of the simulation without programming knowledge, the `settings.json` provides the possibility to edit the settings outside the code.  
 
 ### Parameters
