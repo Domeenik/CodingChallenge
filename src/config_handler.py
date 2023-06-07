@@ -1,6 +1,6 @@
 import json
 
-#ToDo: add different file formats: yaml, xml, conf
+# This is a confighandler for loading json files as settings i wrote some years ago
 
 class ConfigHandler():
     def __init__(self, path):

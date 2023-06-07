@@ -58,7 +58,7 @@ while True:
         if (excessive_time / (1./c_freq)) > c_max_exc_time:
             print(
                 f"[WARN] The overrun time above the set point is too long by {round((excessive_time / (1./c_freq)), 5)}%")
-            print("[WARN] The simulation will NOT run in real time")
+            print("[WARN] The data will NOT be send in the required frequency")
         time_a = time_b
 
         # send player data to the server
