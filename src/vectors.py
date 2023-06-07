@@ -43,16 +43,20 @@ class Vector2(np.ndarray):
             return super().__mul__(value)
         elif isinstance(value, type(self)):
             return super().dot(value)
+        else:
+            raise TypeError(f"{value} is not an instance of {type(self)}, {type(int)} or {type(float)}")
 
     def __floordiv__(self, value):
         if isinstance(value, int) or isinstance(value, float):
             return super().__floordiv__(value)
-        return
+        else:
+            raise TypeError(f"{value} is not an instance of {type(int)} or {type(float)}")
 
     def __truediv__(self, value):
         if isinstance(value, int) or isinstance(value, float):
             return super().__truediv__(value)
-        return
+        else:
+            raise TypeError(f"{value} is not an instance of {type(int)} or {type(float)}")
 
     # some vector functions
     def length(self):

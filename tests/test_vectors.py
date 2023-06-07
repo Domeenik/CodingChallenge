@@ -23,19 +23,29 @@ class TestVector2(unittest.TestCase):
             
     def test___add__(self):
         self.assertEqual(list(self.v1 + self.v2), list(Vector2(1, 5)))
-        
+        with self.assertRaises(TypeError):
+            Vector2(0,1) + 2
+            
     def test___sub__(self):
         self.assertEqual(list(self.v1 - self.v2), list(Vector2(5, 3)))
+        with self.assertRaises(TypeError):
+            Vector2(0,1) - 2
         
     def test___mul__(self):
         self.assertEqual(self.v1 * self.v2, -2)
         self.assertEqual(list(self.v2 * 2), list(Vector2(-4,2)))
+        with self.assertRaises(TypeError):
+            Vector2(0,1) * "test"
         
     def test___floordiv__(self):
         self.assertEqual(list(self.v2//2), list(Vector2(-1, 0)))
+        with self.assertRaises(TypeError):
+            Vector2(0,1) // Vector2(0,1)
         
-    def test___floordiv__(self):
+    def __truediv__(self):
         self.assertEqual(list(self.v2/2), list(Vector2(-1, 0.5)))
+        with self.assertRaises(TypeError):
+            Vector2(0,1) / Vector2(0,1)
         
     def test_length(self):
         self.assertEqual(self.v2.length(), math.sqrt(5))
@@ -45,6 +55,8 @@ class TestVector2(unittest.TestCase):
         
     def test_distance_to(self):
         self.assertEqual(self.v1.distance_to(self.v2), 5.830951894845301)
+        with self.assertRaises(TypeError):
+            Vector2(0,1).distance_to(2)
                 
     def test_x(self):
         self.assertEqual(self.v2.x(), list(self.v2)[0])
@@ -58,7 +70,11 @@ class TestVector2(unittest.TestCase):
     def test_set_x(self):
         self.v2.set_x(4)
         self.assertEqual(list(self.v2), list(Vector2(4,1)))
+        with self.assertRaises(TypeError):
+            Vector2(0,1).set_x("test")
         
     def test_set_y(self):
         self.v2.set_y(-2)
         self.assertEqual(list(self.v2), list(Vector2(-2,-2)))
+        with self.assertRaises(TypeError):
+            Vector2(0,1).set_y("test")

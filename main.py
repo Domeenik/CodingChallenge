@@ -1,5 +1,6 @@
 from src.config_handler import ConfigHandler
 from src.game import Field, Game
+from src.vectors import Vector2
 import src.msg_pb2 as msg
 import zmq
 import time
@@ -35,17 +36,40 @@ socket = context.socket(zmq.PAIR)
 # ToDo: add timeout
 socket.connect(f"tcp://{c_zmq_addr}:{c_zmq_port}")
 
-# ToDo: add handshake
-
-# setup game
+# setup game instance
 print("[INFO] Create game instance")
 field = Field(size_x=c_field_width, size_y=c_field_height)
 game = Game(player_count=c_player_count, field=field, boid_behavior=c_player_boid_behavior, max_vel=c_player_max_speed,
             sight=c_player_sight, alignment=c_player_alignment, coherence=c_player_coherence, separation=c_player_separation)
 
-# main
-print("[INFO] Start with the main loop")
+# runtime testing
+players = {}
+def runtime_testing(last_message: msg.Position, current_message: msg.Position):
+    # check if the required frequency is matched
+    time_deviation = abs(current_message.timestamp_usec - last_message.timestamp_usec - 1000000)
+    if time_deviation > 1000000 * c_max_exc_time:
+        print(f"[WARN] Time deviation is with {time_deviation} microseconds larger than the required {c_max_exc_time*100.0}%")
+    
+    # check if player is inside the boundaries
+    if not 0 <= current_message.position.x <= c_field_width or not 0 <= current_message.position.y <= c_field_height:
+        print(f"[WARN] Player {current_message.sensorId} is not inside of the field")
+    
+    # check if the players velocity is below the set maximum
+    pos_last = Vector2(last_message.position.x, last_message.position.y)
+    pos_current = Vector2(current_message.position.x, current_message.position.y)
+    player_speed = pos_last.distance_to(pos_current) / ((current_message.timestamp_usec - last_message.timestamp_usec)/ 1000000.0)
+    if player_speed > c_player_max_speed:
+        print(f"[WARN] Player {current_message.sensorId} is too fast with a speed of {round(player_speed, 4)} m/s")
+    
+# fill runtime test dict
+game.update()
+msg_list = game.get_protobuf()
+for msg in msg_list:
+    players[msg.sensorId] = msg
+
+# main loop
 time_a = time.time()
+print("[INFO] Start with the main loop")
 while True:
     # update the players
     game.update()
@@ -53,15 +77,11 @@ while True:
     # check if it is time for sending the data to the server
     time_b = time.time()
     if time_b >= time_a + (1./c_freq):
-        # get excessive time after intervall for quality control
-        excessive_time = ((time_b - time_a) - (1./c_freq))
-        if (excessive_time / (1./c_freq)) > c_max_exc_time:
-            print(
-                f"[WARN] The overrun time above the set point is too long by {round((excessive_time / (1./c_freq)), 5)}%")
-            print("[WARN] The data will NOT be send in the required frequency")
         time_a = time_b
 
         # send player data to the server
         msg_list = game.get_protobuf()
         for msg in msg_list:
+            runtime_testing(players[msg.sensorId], msg)
             socket.send(msg.SerializeToString())
+            players[msg.sensorId] = msg

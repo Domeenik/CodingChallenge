@@ -8,9 +8,9 @@ class TestField(unittest.TestCase):
 
     def test___init___(self):
         with self.assertRaises(ValueError):
-            field = Field(0, 1)
+            Field(0, 1)
         with self.assertRaises(ValueError):
-            field = Field(1, -1)
+            Field(1, -1)
 
 
 class TestPlayer(unittest.TestCase):

@@ -27,6 +27,6 @@
         "background_color": [242, 234, 218]
     },
     "quality_control": {
-        "max_excessive_time_percent": 0.01
+        "max_excessive_time_percent": 0.005
     }
 }
