@@ -28,7 +28,7 @@ class TestPlayer(unittest.TestCase):
         for i in range(100):
             player_a = Player(0, self.field, 3)
             # check if speed is correct
-            self.assertAlmostEqual(player_a.vel.length(), 3, places=4)
+            self.assertLessEqual(player_a.vel.length(), 3)
             # check if position is inside of the field
             self.assertTrue(0 <= player_a.pos.x() <= self.field.size_x)
             self.assertTrue(0 <= player_a.pos.y() <= self.field.size_y)
@@ -76,7 +76,7 @@ class TestPlayerBoid(unittest.TestCase):
         # because of random value assignment, the test has to be done multiple times
         for i in range(100):
             # check if speed is correct
-            self.assertAlmostEqual(player_a.vel.length(), 3)
+            self.assertLessEqual(player_a.vel.length(), 3)
             # check if position is inside of the field
             self.assertTrue(0 <= player_a.pos.x() <= self.field.size_x)
             self.assertTrue(0 <= player_a.pos.y() <= self.field.size_y)

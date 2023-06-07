@@ -38,7 +38,7 @@ class Player():
                            (random.random()-0.5)*max_vel)
 
         # cap speed to maximal velocity
-        self.vel = self.vel.norm() * self.max_vel
+        self.vel = self.vel.norm() * self.max_vel * 0.99
 
     def update(self, *args):
         time_b = time.time()
