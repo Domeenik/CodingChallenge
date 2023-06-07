@@ -16,18 +16,20 @@ c_freq = config.get("game", "updates_per_second")
 c_player_count = config.get("game", "player_count")
 c_field_width = config.get("field", "width")
 c_field_height = config.get("field", "height")
-c_max_exc_time = config.get("quality_control", "max_excessive_time_percent")
 c_player_boid_behavior = config.get("player", "boid_behavior")
 c_player_max_speed = config.get("player", "max_speed")
 c_player_sight = config.get("player", "sight")
 c_player_alignment = config.get("player", "alignment")
 c_player_coherence = config.get("player", "coherence")
 c_player_separation = config.get("player", "separation")
+c_runtime_testing = config.get("quality_control", "enable_runtime_testing")
+c_max_exc_time = config.get("quality_control", "max_excessive_time_percent")
 
 # some info about the config
 print(f"[CONF] Sending frequency is {(1./c_freq)} Hz")
 print(f"[CONF] There are {c_player_count} players")
 print(f"[CONF] Field dimensions are {c_field_width} m x {c_field_height} m")
+print(f"[CONF] Runtime testing is {'enabled' if c_runtime_testing else 'disabled'}")
 
 # setup ZeroMQ-connection
 print(f"[INFO] Connect to server 'tcp://{c_zmq_addr}:{c_zmq_port}'")
@@ -62,10 +64,11 @@ def runtime_testing(last_message: msg.Position, current_message: msg.Position):
         print(f"[WARN] Player {current_message.sensorId} is too fast with a speed of {round(player_speed, 4)} m/s")
     
 # fill runtime test dict
-game.update()
-msg_list = game.get_protobuf()
-for msg in msg_list:
-    players[msg.sensorId] = msg
+if c_runtime_testing:
+    game.update()
+    msg_list = game.get_protobuf()
+    for msg in msg_list:
+        players[msg.sensorId] = msg
 
 # main loop
 time_a = time.time()
@@ -82,6 +85,7 @@ while True:
         # send player data to the server
         msg_list = game.get_protobuf()
         for msg in msg_list:
-            runtime_testing(players[msg.sensorId], msg)
+            if c_runtime_testing:
+                runtime_testing(players[msg.sensorId], msg)
             socket.send(msg.SerializeToString())
             players[msg.sensorId] = msg
